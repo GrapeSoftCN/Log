@@ -7,6 +7,7 @@ import org.json.simple.JSONObject;
 
 import JGrapeSystem.rMsg;
 import apps.appsProxy;
+import authority.plvDef.UserMode;
 import interfaceModel.GrapeDBSpecField;
 import interfaceModel.GrapeTreeDBModel;
 import nlogger.nlogger;
@@ -22,6 +23,7 @@ public class Logs {
     private String currentWeb = null;
     private String userId = null;
     private String userName = null;
+    private Integer userType = null;
 
     public Logs() {
         log = new GrapeTreeDBModel();
@@ -29,6 +31,8 @@ public class Logs {
         gDbSpecField.importDescription(appsProxy.tableConfig("Logs"));
         log.descriptionModel(gDbSpecField);
         log.bindApp();
+        log.enableCheck();//开启权限检查
+        
         
         se = new session();
         usersInfo = se.getDatas();
@@ -36,6 +40,7 @@ public class Logs {
             currentWeb = usersInfo.getString("currentWeb"); // 当前用户所属网站id
             userName = usersInfo.getString("name");    //当前用户姓名
             userId = usersInfo.getString("id");  //当前用户用户名
+            userType =usersInfo.getInt("userType");//当前用户身份
         }
     }
 
@@ -59,7 +64,7 @@ public class Logs {
             object.put("time", TimeHelper.nowMillis()); //操作时间
             object.put("wbid", wbid);  //操作网站id
             object.put("functionName", FunctionName);  // 调用接口名称
-            log.data(object).autoComplete().insertOnce();
+            log.data(object).autoComplete().insertEx();
         } catch (Exception e) {
             nlogger.logout(e);
         }
