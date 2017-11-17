@@ -28,6 +28,7 @@ public class Logs {
     public Logs() {
         log = new GrapeTreeDBModel();
         gDbSpecField = new GrapeDBSpecField();
+        System.out.println(appsProxy.tableConfig("Logs"));
         gDbSpecField.importDescription(appsProxy.tableConfig("Logs"));
         log.descriptionModel(gDbSpecField);
         log.bindApp();
@@ -51,7 +52,7 @@ public class Logs {
      * @param username
      */
     @SuppressWarnings("unchecked")
-    public void AddLogs(String uid,String uname,String action,String wbid,String FunctionName) {
+    public void AddLogs(String uid,String uname,String action,String FunctionName) {
         String ip = "", address = "";
         try {
             JSONObject object = new JSONObject();
@@ -62,7 +63,7 @@ public class Logs {
             object.put("userAddress", address); // 根据ip地址定位地理位置
             object.put("action", action); //操作
             object.put("time", TimeHelper.nowMillis()); //操作时间
-            object.put("wbid", wbid);  //操作网站id
+            object.put("wbid", currentWeb);  //操作网站id
             object.put("functionName", FunctionName);  // 调用接口名称
             log.data(object).autoComplete().insertEx();
         } catch (Exception e) {
